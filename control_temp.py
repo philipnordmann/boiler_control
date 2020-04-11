@@ -1,28 +1,30 @@
 import random as r
-import math
-#import MockSensor as sensor
-import temp_sensor as sensor
+import logging
+import MockConSen as sensor
+import MockConSen as controler
+#import RaspberrySensor as sensor
+#import RaspberryControler as controler
 
 class TempController(object):
     
-    def __init__(self, min, max):
+    def __init__(self, target, change_amount):
         self.current_temp = 0
-        self.min = min
-        self.max = max
+        self.target_temp = target
         self.last_temp = None
-        self.minimum_change = 5
-        self.gas_flow_change_amount = 5
-        print(min, max)
+        self.gas_flow_change_amount = change_amount
+        logging.debug("Current configuration of TempController: target temp: {}, gas flow change amount: {}".format(target, change_amount))
 
     def read(self):
-        temp = sensor.get_current_temp()   
+        temp = sensor.get_current_temp()
         return temp
 
     def decrease_gas_flow(self, amount):
-        print("decreasing gas flow {}".format(amount))
+        logging.debug("decreasing gas flow by {}".format(amount))
+        controler.decrease_temp(amount)
 
     def increase_gas_flow(self, amount):
-        print("increasing gas flow {}".format(amount))
+        logging.debug("increasing gas flow by {}".format(amount))
+        controler.increase_temp(amount)
 
     def control(self):
         current_temp = self.read()
@@ -30,18 +32,16 @@ class TempController(object):
         if self.last_temp == None:
             self.last_temp = current_temp
         
-        if abs(current_temp - self.last_temp) >= self.minimum_change:
-            if current_temp > self.last_temp:
-                self.decrease_gas_flow(self.gas_flow_change_amount)
-            else:
-                self.increase_gas_flow(self.gas_flow_change_amount)
+        if current_temp > self.target_temp:
+            self.decrease_gas_flow(self.gas_flow_change_amount)
         else:
-            print("done nothing")
+            self.increase_gas_flow(self.gas_flow_change_amount)
+
     
-    def run(self):
+    def start(self):
         try:
+            logging.info("start controlling the gas flow by temp...")
             while True:
                 self.control()
         except KeyboardInterrupt:
-            print("keyboard")
             pass

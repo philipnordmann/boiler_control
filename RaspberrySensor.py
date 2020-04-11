@@ -1,2 +1,2 @@
 def get_current_temp():
-    return 5
+    return 6
