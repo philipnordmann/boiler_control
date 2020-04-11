@@ -21,7 +21,7 @@ def start_temp_controller(input):
 
 def start_water_controller(input):
     wc = WaterController(**input)
-    p = Process(target=wc.start)
+    p = Process(target=wc.run)
     p.start()
     jobs.append(p)
 
@@ -34,7 +34,12 @@ def main():
 
 
     #water = { 'min': int(config['water']['min']), 'max': int(config['water']['max']) }
-    temp = { 'target': float(config['temp']['target']), 'change_amount': float(config['temp']['change_amount']) }
+    temp = {
+        'target': float(config['temp']['target']),
+        'change_amount': float(config['temp']['change_amount']),
+        'wait_time': float(config['temp']['wait_time']),
+        'avg_measures': int(config['temp']['loop_count'])
+    }
     
     log_str = config['logging']['level']
     log_format = r'%(asctime)s %(levelname)s %(process)d %(processName)s %(message)s'
