@@ -7,6 +7,7 @@ from statistics import mean
 #import RaspberrySensor as sensor
 #import RaspberryControler as controler
 
+
 class TempController(object):
     
     def __init__(self, target, change_amount, wait_time, avg_measures):
@@ -14,7 +15,6 @@ class TempController(object):
         self.target_temp = target
         self.last_temp = None
         self.gas_flow_change_amount = change_amount
-
 
         self.wait_time = wait_time
         self.avg_measures = avg_measures
@@ -41,7 +41,7 @@ class TempController(object):
     def control(self):
         current_temp = self.read()
         
-        if self.last_temp == None:
+        if self.last_temp is None:
             self.last_temp = current_temp
         
         if current_temp > self.target_temp:
@@ -49,7 +49,6 @@ class TempController(object):
         else:
             self.increase_gas_flow(self.gas_flow_change_amount)
 
-    
     def start(self):
         try:
             logging.info("start controlling the gas flow by temp...")
