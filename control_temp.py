@@ -15,6 +15,7 @@ class TempController(object):
         self.last_temp = None
         self.gas_flow_change_amount = change_amount
 
+
         self.wait_time = wait_time
         self.avg_measures = avg_measures
 
